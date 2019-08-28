@@ -7,10 +7,24 @@
   <title>Crack me pls!</title>
   <link rel="stylesheet" href="toggle.css">
   <link rel="stylesheet" href="style.css">
-  <script src="sha256.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.9-1/crypto-js.min.js"></script>
   <script>
+    var request = new XMLHttpRequest();
+    request.open('GET', './msg.txt', true);
+    request.onload = function() {
+    if (this.status >= 200 && this.status < 400) {
+      var asciiciphertext = this.response;
+    } else {
+      alert('Getting an encrypted message failed.');
+    }
+    };
+    request.onerror = function() {
+      alert('Getting an encrypted message failed.');
+    };
+    request.send();
     function submit1(){
       var x = '';
+      var sha256 = (x) => CryptoJS.SHA256(x).toString();
       for (let i=0; i<32; i++) {
         if (document.getElementById('toggle' + i).checked) {
           x += '1';
@@ -19,16 +33,21 @@
         }
       }
       var granted = sha256(x).slice(64-3)=='aaa';
-      granted &= sha256(document.getElementById('name').placeholder).slice(0,2)=='ee';
-      x = sha256(document.getElementById('name').placeholder).slice(0,3) + '-' + x;
-      x += '-' + document.getElementById('axis').value%7;
+      granted &= sha256(document.getElementById('name').value).slice(0,2)=='ee';
+      x = sha256(document.getElementById('name').placeholder+document.getElementById('name').value).slice(0,3) + '-' + x;
+      x += '-' + (document.getElementById('axis').value/1+String(submit1).length)%7;
+      var password = x;
       x = window.location.host + '-' + x;
       granted &= sha256(x) == '9b70cd9ff32f8407c6436040bc5cfb0980c76ffe85f2ed1c9faa153b74f8071e';
-      alert(x)
+      var time = new Date().toISOString().slice(11, 19);
       if (granted) {
-        alert('Access granted.');
+        document.getElementById('access').innerText = time + ' Access granted.';
+        if(typeof asciiciphertext !== 'undefined')
+          document.getElementById('msg').innerHTML = CryptoJS.AES.decrypt(asciphertext, sha256(password)).toString(CryptoJS.enc.Utf8);
+        else
+          document.getElementById('msg').innerHTML = 'Getting an encrypted message failed.';
       } else {
-        alert('Access denied.');
+        document.getElementById('access').innerText = time + ' Access denied.';
       }
     }
   </script>
@@ -36,7 +55,7 @@
 <body>
   <article>
     <h1>Crack me</h1>
-    <form>
+    <form action="javascript:submit1()">
       <input type="text" placeholder="What's your name?" id="name">
       <div>
         <input type="checkbox" id="toggle0" style="display:none" class="cbx">
@@ -236,6 +255,10 @@
         <input type="button" onclick="submit1()" value="SUBMIT">
       </div>
     </form>
+  </article>
+  <article>
+    <h2 id="access">You won't do this!</h2>
+    <div id="msg"></div>
   </article>
 </body>
 </html>
