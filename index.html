@@ -44,7 +44,7 @@
       if (granted) {
         document.getElementById('access').innerText = time + ' Access granted.';
         if(asciiciphertext)
-          document.getElementById('msg').innerHTML = CryptoJS.AES.decrypt(asciphertext, sha256(password)).toString(CryptoJS.enc.Utf8);
+          document.getElementById('msg').innerHTML = CryptoJS.AES.decrypt(asciiciphertext, sha256(password)).toString(CryptoJS.enc.Utf8);
         else
           document.getElementById('msg').innerHTML = 'Getting an encrypted message failed.';
       } else {
