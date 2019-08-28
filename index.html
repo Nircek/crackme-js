@@ -10,10 +10,11 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.9-1/crypto-js.min.js"></script>
   <script>
     var request = new XMLHttpRequest();
+    var asciiciphertext = '';
     request.open('GET', './msg.txt', true);
     request.onload = function() {
     if (this.status >= 200 && this.status < 400) {
-      var asciiciphertext = this.response;
+      asciiciphertext = this.response;
     } else {
       alert('Getting an encrypted message failed.');
     }
@@ -42,7 +43,7 @@
       var time = new Date().toISOString().slice(11, 19);
       if (granted) {
         document.getElementById('access').innerText = time + ' Access granted.';
-        if(typeof asciiciphertext !== 'undefined')
+        if(asciiciphertext)
           document.getElementById('msg').innerHTML = CryptoJS.AES.decrypt(asciphertext, sha256(password)).toString(CryptoJS.enc.Utf8);
         else
           document.getElementById('msg').innerHTML = 'Getting an encrypted message failed.';
