@@ -23,6 +23,7 @@
       alert('Getting an encrypted message failed.');
     };
     request.send();
+    String.prototype.count = function(str){return this.split(str).length-1;};
     function submit1(){
       var x = '';
       var sha256 = (x) => CryptoJS.SHA256(x).toString();
@@ -34,6 +35,7 @@
         }
       }
       var granted = sha256(x).slice(64-3)=='aaa';
+      granted &= x.count('1') == 14;
       granted &= sha256(document.getElementById('name').value).slice(0,2)=='ee';
       x = sha256(document.getElementById('name').placeholder+document.getElementById('name').value).slice(0,3) + '-' + x;
       x += '-' + (document.getElementById('axis').value/1+String(submit1).length)%7;
