@@ -1,0 +1,9 @@
+article {
+  margin: auto;
+  width: 692px;
+}
+#name, h1, form {
+  text-align: center;
+  display: block;
+  margin: 10px auto;
+}
