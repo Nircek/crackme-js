@@ -10,7 +10,26 @@
   <script src="sha256.js"></script>
   <script>
     function submit1(){
-      alert(sha256('Access denied.'));
+      var x = '';
+      for (let i=0; i<32; i++) {
+        if (document.getElementById('toggle' + i).checked) {
+          x += '1';
+        } else {
+          x += '0';
+        }
+      }
+      var granted = sha256(x).slice(64-3)=='aaa';
+      granted &= sha256(document.getElementById('name').placeholder).slice(0,2)=='ee';
+      x = sha256(document.getElementById('name').placeholder).slice(0,3) + '-' + x;
+      x += '-' + document.getElementById('axis').value%7;
+      x = window.location.host + '-' + x;
+      granted &= sha256(x) == '9b70cd9ff32f8407c6436040bc5cfb0980c76ffe85f2ed1c9faa153b74f8071e';
+      alert(x)
+      if (granted) {
+        alert('Access granted.');
+      } else {
+        alert('Access denied.');
+      }
     }
   </script>
 </head>
